@@ -1,0 +1,14 @@
+streamlit==1.17.0
+torch==2.1.0
+transformers==4.31.0
+cv2==4.7.0
+yt-dlp==2024.05.02
+pillow==9.2.0
+numpy==1.23.3
+matplotlib==3.7.1
+speechrecognition==3.8.1
+gtts==2.3.1
+deep-translator==1.7.0
+youtube-transcript-api==0.4.4
+pydub==0.25.1
+pytorch-lightning==2.0.3
