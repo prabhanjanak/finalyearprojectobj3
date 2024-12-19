@@ -181,42 +181,4 @@ if st.button("Summarize Video"):
             transcript = generate_transcript_from_audio(file_path)
             
             # Step 5: Generate summary using the transcript and detected objects
-            summary = generate_summary_from_transcript_and_objects(transcript, detected_objects)
-            
-            # Display the summary in English
-            st.success("### Summary Generated:")
-            st.write(summary)
-            
-            # Translate the summary if the button is clicked
-            if st.button("Translate Summary"):
-                translated_summary = GoogleTranslator(source='auto', target=add_selectbox).translate(summary)
-                st.markdown(f"### Translated Summary: {translated_summary}")
-                
-                # Generate and play audio for the translated summary
-                audio = gTTS(text=translated_summary, lang=add_selectbox[:2], slow=False)
-                audio_fp = BytesIO()
-                audio.save(audio_fp)
-                audio_fp.seek(0)
-                st.audio(audio_fp, format="audio/mp3")
-            
-            else:
-                # Generate and play audio for the English summary
-                audio = gTTS(text=summary, lang='en', slow=False)
-                audio_fp = BytesIO()
-                audio.save(audio_fp)
-                audio_fp.seek(0)
-                st.audio(audio_fp, format="audio/mp3")
-                
-    else:
-        st.error("Please enter a valid YouTube video URL.")
-
-# Add Sidebar Info
-st.sidebar.info(
-    """
-    This web [app][#streamlit-app] is made by\n
-    [Soman Yadav][#linkedin2]
-    
-    [#linkedin2]: https://www.linkedin.com/in/somanyadav/
-    [#streamlit-app]: https://github.com/somanyadav/Youtube-Summariser/
-    """
-)
+            summary = generate_summary_from[_{{{CITATION{{{_1{](https://github.com/animespotflix/yez/tree/77db45b4a063747aaa36dc16c246dbe2878de40f/README.md)[_{{{CITATION{{{_2{](https://github.com/shubham2652/Dragoman-Server/tree/87100ee13c94092b21fec3f5acfa565ac6d7ecbb/dragmon_server.py)[_{{{CITATION{{{_3{](https://github.com/innovation-discovery/se-scraper/tree/36c6aa7340f5f6b55bf64f59dfc0e79e68aeaccc/src%2Fmodules%2Fgoogle.js)[_{{{CITATION{{{_4{](https://github.com/mraykov/multilingo-km16/tree/7e7424ee643f68a3dd6b483c672a55f6abcb1bca/server%2Fsrc%2Fcommon%2Fsupported%20languages%2Fsupported-languages-s-l.ts)[_{{{CITATION{{{_5{](https://github.com/handleryouth/Translator_Tkinter/tree/f2741a3f127c8d2bdca8993bd4405449b909104b/app.py)[_{{{CITATION{{{_6{](https://github.com/Kxganzzz/galaxy-v7-new/tree/8fe6bd79d2ed0fae8461e9e27e29017d9980a72a/node_modules%2F@vitalets%2Fgoogle-translate-api%2Flanguages.js)[_{{{CITATION{{{_7{](https://github.com/mujohn26/translate-api/tree/b53419803565fd33d54d5268bead6e305bedb438/languages.js)
