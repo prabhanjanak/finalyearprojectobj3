@@ -7,7 +7,6 @@ from urllib.parse import urlparse
 from transformers import T5ForConditionalGeneration, T5Tokenizer
 import yt_dlp as youtube_dl
 import speech_recognition as sr
-import tempfile
 import os
 
 # Function to download YouTube video
@@ -38,21 +37,14 @@ def extract_frames_from_video(file_path):
     
     return frames
 
-import os
-import torch
-
-def load_yolov8_model():
-    # Check if the model is already downloaded
-    if not os.path.exists('yolov8'):
-        os.system('git clone https://github.com/ultralytics/yolov8.git')
-    
-    # Load the model
-    model = torch.hub.load('yolov8', 'yolov8n', source='local')
+# Load YOLOv11 model
+def load_yolov11_model():
+    model = torch.hub.load('ultralytics/yolov11', 'yolov11n', force_reload=True)  # Load YOLOv11 model
     return model
 
-# YOLOv8 object detection
-def apply_yolov8_on_frames(frames):
-    model = load_yolov8_model()  # Load YOLOv8 model
+# YOLOv11 object detection
+def apply_yolov11_on_frames(frames):
+    model = load_yolov11_model()  # Load YOLOv11 model
     detected_objects = []
     
     for frame in frames:
@@ -103,7 +95,7 @@ def generate_summary_from_transcript_and_objects(transcript, detected_objects):
     return final_summary
 
 # Streamlit UI for dynamic user interaction
-st.set_page_config(page_title="Court Session Video Summarizer", layout="wide")
+st.set_page_config(page_title="Court Session Video Summarizer with YOLOv11", layout="wide")
 
 # Light/Dark mode toggle
 theme = st.sidebar.radio('Select Theme', ['Light', 'Dark'])
@@ -129,13 +121,13 @@ if theme == 'Dark':
         </style>
     """, unsafe_allow_html=True)
 
-st.title("Court Session Video Summarizer with YOLOv8")
+st.title("Court Session Video Summarizer with YOLOv11")
 st.markdown("### Enter the YouTube video link below to get a summary along with object detection")
 
 # Input for YouTube URL
 url = st.text_input("Enter YouTube Video URL:")
 
-# If Summarize button is clicked
+ # If Summarize button is clicked
 if st.button("Summarize Video"):
     if url:
         with st.spinner("Processing video..."):
@@ -145,8 +137,8 @@ if st.button("Summarize Video"):
             # Step 2: Extract frames from the downloaded video
             frames = extract_frames_from_video(audio_file_path)
             
-            # Step 3: Detect objects using YOLOv8
-            detected_objects = apply_yolov8_on_frames(frames)
+            # Step 3: Detect objects using YOLOv11
+            detected_objects = apply_yolov11_on_frames(frames)
             
             # Step 4: Generate transcript from the audio
             transcript = generate_transcript_from_audio(audio_file_path)
@@ -164,3 +156,6 @@ if st.button("Summarize Video"):
 if os.path.exists('./downloads'):
     for file in os.listdir('./downloads'):
         os.remove(os.path.join('./downloads', file))
+    os.rmdir('./downloads')  # Remove the downloads directory after cleanup
+
+st.success("Processing complete!")
