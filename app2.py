@@ -2,43 +2,28 @@ import streamlit as st
 import cv2
 import numpy as np
 import torch
-import requests
 from youtube_transcript_api import YouTubeTranscriptApi
 from urllib.parse import urlparse
-from transformers import T5ForConditionalGeneration, T5Tokenizer
+from transformers import BartForConditionalGeneration, BartTokenizer
 import yt_dlp as youtube_dl
 import speech_recognition as sr
 import os
 
-# Function to download the YOLOv11 model from GitHub
-def download_yolov11_model():
-    model_url = "https://github.com/prabhanjanak/finalyearprojectobj3/raw/main/yolo11n.pt"
-    model_path = "yolo11n.pt"
-    response = requests.get(model_url)
-    
-    if response.status_code == 200:
-        with open(model_path, 'wb') as f:
-            f.write(response.content)
-        print("YOLOv11 model downloaded successfully!")
-        return model_path
-    else:
-        print("Failed to download YOLOv11 model.")
-        return None
-
-# Function to download YouTube video (Full Video)
+# Function to download YouTube video
 def download_youtube_video(url):
     ydl_opts = {
-        'format': 'bestvideo+bestaudio/best',
+        'format': 'bestaudio/best',
         'outtmpl': './downloads/%(id)s.%(ext)s',
         'quiet': True
     }
+    
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         info_dict = ydl.extract_info(url, download=True)
         video_id = info_dict.get('id', '')
-        video_file_path = f"./downloads/{video_id}.mp4"  # Full video path
-        return video_file_path
+        file_path = f"./downloads/{video_id}.mp3"  # Audio path
+        return file_path
 
-# Function to extract frames from the downloaded video file
+# Function to extract frames from a downloaded video file
 def extract_frames_from_video(file_path):
     video_capture = cv2.VideoCapture(file_path)
     frames = []
@@ -54,27 +39,21 @@ def extract_frames_from_video(file_path):
 
 # Load YOLOv11 model
 def load_yolov11_model():
-    model_path = download_yolov11_model()
-    if model_path:
-        model = torch.load(model_path)
-        return model
-    else:
-        print("Model not downloaded, exiting...")
-        return None
+    model = torch.hub.load('ultralytics/yolov11', 'yolov11n', force_reload=True)  # Load YOLOv11 model
+    return model
 
 # YOLOv11 object detection
 def apply_yolov11_on_frames(frames):
     model = load_yolov11_model()  # Load YOLOv11 model
     detected_objects = []
     
-    if model:
-        for frame in frames:
-            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            results = model(frame_rgb)
-            labels = results.names
-            for *box, conf, cls in results.xywh[0]:
-                label = labels[int(cls)]
-                detected_objects.append(label)
+    for frame in frames:
+        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        results = model(frame_rgb)
+        labels = results.names
+        for *box, conf, cls in results.xywh[0]:
+            label = labels[int(cls)]
+            detected_objects.append(label)
     
     return detected_objects
 
@@ -95,13 +74,13 @@ def generate_transcript_from_audio(file_path):
 
 # Function to generate a summary from the transcript and detected objects
 def generate_summary_from_transcript_and_objects(transcript, detected_objects):
-    model = T5ForConditionalGeneration.from_pretrained("t5-base")
-    tokenizer = T5Tokenizer.from_pretrained("t5-base")
+    model = BartForConditionalGeneration.from_pretrained("facebook/bart-large-cnn")
+    tokenizer = BartTokenizer.from_pretrained("facebook/bart-large-cnn")
     
-    inputs = tokenizer.encode("summarize: " + transcript, return_tensors="pt", max_length=512, truncation=True)
+    inputs = tokenizer(transcript, return_tensors="pt", max_length=512, truncation=True)
     
     outputs = model.generate(
-        inputs, 
+        inputs['input_ids'], 
         max_length=150, 
         min_length=40, 
         length_penalty=2.0, 
@@ -148,21 +127,21 @@ st.markdown("### Enter the YouTube video link below to get a summary along with 
 # Input for YouTube URL
 url = st.text_input("Enter YouTube Video URL:")
 
-# If Summarize button is clicked
+ # If Summarize button is clicked
 if st.button("Summarize Video"):
     if url:
         with st.spinner("Processing video..."):
-            # Step 1: Download video from the YouTube link
-            video_file_path = download_youtube_video(url)
+            # Step 1: Download audio from the YouTube video
+            audio_file_path = download_youtube_video(url)
             
             # Step 2: Extract frames from the downloaded video
-            frames = extract_frames_from_video(video_file_path)
+            frames = extract_frames_from_video(audio_file_path)
             
             # Step 3: Detect objects using YOLOv11
             detected_objects = apply_yolov11_on_frames(frames)
             
             # Step 4: Generate transcript from the audio
-            transcript = generate_transcript_from_audio(video_file_path)
+            transcript = generate_transcript_from_audio(audio_file_path)
             
             # Step 5: Generate summary using the transcript and detected objects
             summary = generate_summary_from_transcript_and_objects(transcript, detected_objects)
