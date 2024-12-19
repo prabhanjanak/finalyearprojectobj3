@@ -28,7 +28,6 @@ def download_youtube_video(url):
         video_id = info_dict.get('id', '')
         file_path = f"./downloads/{video_id}.mp3"  # Audio path
         return file_path
-
 # Function to extract frames from YouTube video
 def extract_frames_from_youtube_video(url):
     video_id = urlparse(url).query.split('v=')[1]
@@ -46,7 +45,6 @@ def extract_frames_from_youtube_video(url):
     video_capture.release()
     
     return frames
-
 # YOLOv8 object detection
 def apply_yolov8_on_frames(frames):
     # Load YOLOv8 model (using the latest model from ultralytics YOLOv8)
@@ -68,7 +66,6 @@ def apply_yolov8_on_frames(frames):
             detected_objects.append(label)
     
     return detected_objects
-
 # Function to generate a transcript from YouTube (audio)
 def generate_transcript_from_audio(file_path):
     recognizer = sr.Recognizer()
@@ -83,7 +80,20 @@ def generate_transcript_from_audio(file_path):
         transcript = "Sorry, there was an issue with the audio service."
     
     return transcript
-
+# Function to generate a transcript from YouTube (audio)
+def generate_transcript_from_audio(file_path):
+    recognizer = sr.Recognizer()
+    with sr.AudioFile(file_path) as source:
+        audio = recognizer.record(source)
+    
+    try:
+        transcript = recognizer.recognize_google(audio)
+    except sr.UnknownValueError:
+        transcript = "Sorry, I couldn't understand the audio."
+    except sr.RequestError:
+        transcript = "Sorry, there was an issue with the audio service."
+    
+    return transcript
 # Function to generate a summary from the transcript and detected objects
 def generate_summary_from_transcript_and_objects(transcript, detected_objects):
     model = T5ForConditionalGeneration.from_pretrained("t5-base")
@@ -107,7 +117,6 @@ def generate_summary_from_transcript_and_objects(transcript, detected_objects):
     final_summary = f"{summ} Additional detected objects in the video: {object_summary}"
     
     return final_summary
-
 # Streamlit UI for dynamic user interaction
 st.set_page_config(page_title="Court Session Video Summarizer", layout="wide")
 
@@ -163,22 +172,5 @@ languages_dict = {
 add_selectbox = st.sidebar.selectbox(
     "Select Language", list(languages_dict.values())
 )
-
 # If Summarize button is clicked
-if st.button("Summarize Video"):
-    if url:
-        with st.spinner("Processing video..."):
-            # Step 1: Download audio from the YouTube video
-            file_path = download_youtube_video(url)
-            
-            # Step 2: Extract frames from the video for YOLO
-            frames = extract_frames_from_youtube_video(url)
-            
-            # Step 3: Detect objects using YOLOv8
-            detected_objects = apply_yolov8_on_frames(frames)
-            
-            # Step 4: Generate transcript from the audio
-            transcript = generate_transcript_from_audio(file_path)
-            
-            # Step 5: Generate summary using the transcript and detected objects
-            summary = generate_summary_from[_{{{CITATION{{{_1{](https://github.com/animespotflix/yez/tree/77db45b4a063747aaa36dc16c246dbe2878de40f/README.md)[_{{{CITATION{{{_2{](https://github.com/shubham2652/Dragoman-Server/tree/87100ee13c94092b21fec3f5acfa565ac6d7ecbb/dragmon_server.py)[_{{{CITATION{{{_3{](https://github.com/innovation-discovery/se-scraper/tree/36c6aa7340f5f6b55bf64f59dfc0e79e68aeaccc/src%2Fmodules%2Fgoogle.js)[_{{{CITATION{{{_4{](https://github.com/mraykov/multilingo-km16/tree/7e7424ee643f68a3dd6b483c672a55f6abcb1bca/server%2Fsrc%2Fcommon%2Fsupported%20languages%2Fsupported-languages-s-l.ts)[_{{{CITATION{{{_5{](https://github.com/handleryouth/Translator_Tkinter/tree/f2741a3f127c8d2bdca8993bd4405449b909104b/app.py)[_{{{CITATION{{{_6{](https://github.com/Kxganzzz/galaxy-v7-new/tree/8fe6bd79d2ed0fae8461e9e27e29017d9980a72a/node_modules%2F@vitalets%2Fgoogle-translate-api%2Flanguages.js)[_{{{CITATION{{{_7{](https://github.com/mujohn26/translate-api/tree/b53419803565fd33d54d5268bead6e305bedb438/languages.js)
+if st.button("Summarize Video[_{{{CITATION{{{_1{](https://github.com/animespotflix/yez/tree/77db45b4a063747aaa36dc16c246dbe2878de40f/README.md)[_{{{CITATION{{{_2{](https://github.com/shubham2652/Dragoman-Server/tree/87100ee13c94092b21fec3f5acfa565ac6d7ecbb/dragmon_server.py)[_{{{CITATION{{{_3{](https://github.com/innovation-discovery/se-scraper/tree/36c6aa7340f5f6b55bf64f59dfc0e79e68aeaccc/src%2Fmodules%2Fgoogle.js)[_{{{CITATION{{{_4{](https://github.com/mraykov/multilingo-km16/tree/7e7424ee643f68a3dd6b483c672a55f6abcb1bca/server%2Fsrc%2Fcommon%2Fsupported%20languages%2Fsupported-languages-s-l.ts)[_{{{CITATION{{{_5{](https://github.com/handleryouth/Translator_Tkinter/tree/f2741a3f127c8d2bdca8993bd4405449b909104b/app.py)[_{{{CITATION{{{_6{](https://github.com/Kxganzzz/galaxy-v7-new/tree/8fe6bd79d2ed0fae8461e9e27e29017d9980a72a/node_modules%2F@vitalets%2Fgoogle-translate-api%2Flanguages.js)[_{{{CITATION{{{_7{](https://github.com/mujohn26/translate-api/tree/b53419803565fd33d54d5268bead6e305bedb438/languages.js)
