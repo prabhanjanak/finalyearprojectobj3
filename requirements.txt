@@ -1,7 +1,7 @@
 streamlit==1.17.0
-torch==2.2.0  # Or use a version that works with Python 3.12
+torch==2.2.0  # Or any other compatible version with Python 3.12
 transformers==4.31.0
-cv2==4.7.0
+opencv-python==4.8.0.76
 yt-dlp==2024.05.02
 pillow==9.2.0
 numpy==1.23.3
