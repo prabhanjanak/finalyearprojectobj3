@@ -1,14 +1,13 @@
-streamlit==1.17.0
-torch==2.2.0  # Or any other compatible version with Python 3.12
-transformers==4.31.0
-opencv-python==4.8.0.76
-yt-dlp==2024.12.13
-pillow==9.2.0
-numpy==1.25.0
-matplotlib==3.7.1
-speechrecognition==3.8.1
-gtts==2.3.1
-deep-translator==1.7.0
+streamlit==1.24.0
+opencv-python-headless==4.8.0.76
+numpy==1.24.0
+torch==2.2.0
 youtube-transcript-api==0.4.4
-pydub==0.25.1
-pytorch-lightning==2.0.3
+urllib3==1.26.14
+deep-translator==1.8.0
+transformers==4.30.2
+gtts==2.3.2
+yt-dlp==2024.12.17
+speechrecognition==3.10.0
+Pillow==10.0.0
+matplotlib==3.8.0
