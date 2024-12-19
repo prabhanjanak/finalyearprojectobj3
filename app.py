@@ -38,14 +38,21 @@ def extract_frames_from_video(file_path):
     
     return frames
 
+import os
+import torch
+
+def load_yolov8_model():
+    # Check if the model is already downloaded
+    if not os.path.exists('yolov8'):
+        os.system('git clone https://github.com/ultralytics/yolov8.git')
+    
+    # Load the model
+    model = torch.hub.load('yolov8', 'yolov8n', source='local')
+    return model
+
 # YOLOv8 object detection
 def apply_yolov8_on_frames(frames):
-    try:
-        model = torch.hub.load('ultralytics/yolov8', 'yolov8n', force_reload=True)  # Load YOLOv8 model
-    except Exception as e:
-        st.error(f"Error loading YOLOv8 model: {e}")
-        return []
-
+    model = load_yolov8_model()  # Load YOLOv8 model
     detected_objects = []
     
     for frame in frames:
